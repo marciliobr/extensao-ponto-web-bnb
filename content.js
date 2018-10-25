@@ -1,7 +1,9 @@
 chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
-    $(document).ready(function() {calcularSaida()});
-    sendResponse();
+    $(document).ready(function() {
+      calcularSaida()
+    });
+	sendResponse()
   }
 );
 
