@@ -12,7 +12,7 @@
     "declarativeContent"
   ],
   "content_scripts": [{
-    "matches": ["http://pontoeletronico.capgv.intra.bnb/pontoweb"],
+    "matches": ["http://*/pontoweb*"],
     "js": ["content.js", "jquery-3.3.1.min.js"]
   }],
   "background": {

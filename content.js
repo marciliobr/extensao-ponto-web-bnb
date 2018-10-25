@@ -1,8 +1,6 @@
 chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
-    $(document).ready(function() {
-      calcularSaida()
-    });
+    $(document).ready(function() {calcularSaida()});
     sendResponse();
   }
 );
@@ -33,7 +31,7 @@ function convertMinutesToHour(minutes) {
   var hour = parseInt(minutes) / 60;
   var minute = parseInt(minutes) % 60;
   if (minute < 10)
-    return parseInt(hour) + ":0" + parseInt(minute);
+	return parseInt(hour) + ":0" + parseInt(minute);
   else
-    return parseInt(hour) + ":" + parseInt(minute);
+	return parseInt(hour) + ":" + parseInt(minute);
 }
