@@ -1,11 +1,15 @@
-chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
-  if (~tab.url.indexOf('http://pontoeletronico.capgv.intra.bnb/')) {
+chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
+  if (~tab.url.indexOf('/pontoweb')) {
     chrome.pageAction.show(tabId);
     chrome.tabs.query({
       active: true,
       currentWindow: true
-    }, function(tabs) {
+    }, function (tabs) {
       chrome.tabs.sendMessage(tabs[0].id, "calcularSaida");
     });
   }
+});
+
+chrome.pageAction.onClicked.addListener(function (tab) {
+  chrome.tabs.create({ url: "http://pontoeletronico.capgv.intra.bnb/pontoweb", "active": true });
 });
