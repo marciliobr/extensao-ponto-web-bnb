@@ -11,14 +11,23 @@
     "activeTab",
     "tabs",
     "declarativeContent",
-	"storage"
+    "storage"
   ],
-  "content_scripts": [{
-    "matches": ["http://*/pontoweb*"],
-    "js": ["content.js", "jquery-3.3.1.min.js"]
-  }],
+  "content_scripts": [
+    {
+      "matches": [
+        "http://*/pontoweb*"
+      ],
+      "js": [
+        "content.js",
+        "jquery-3.3.1.min.js"
+      ]
+    }
+  ],
   "background": {
-    "scripts": ["bg.js"],
+    "scripts": [
+      "bg.js"
+    ],
     "persistent": false
   }
 }
