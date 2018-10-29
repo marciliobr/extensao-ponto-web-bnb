@@ -8,61 +8,55 @@ chrome.runtime.onMessage.addListener(
 );
 
 function calcularSaida() {
-  var cargaHoraria1 = "5:45";
-  var cargaHoraria2 = "8:00";
+  $(".bnb-ponto-web").remove();
+  var dataHora = getDataHora();
+  var cargaHoraria = getCargaHoraria();
+  console.log("Data/Hora: " + dataHora);
+  console.log("Carga Horária: " + cargaHoraria);
+  
+  $(".label").parent().append('<span class="label label-default bnb-ponto-web">' + dataHora + '<strong></span> ');
+
   var batidas = $("#batidas").find("td");
 
+  var batida1 = batidas[0].textContent.split(" ")[1];
   if (batidas.length >= 3) {
-    var batida1 = batidas[0].textContent.split(" ")[1];
+
     var batida2 = batidas[1].textContent.split(" ")[1];
     var batida3 = batidas[2].textContent.split(" ")[1];
-    var batida4_6h = convertHourToMinute(batida1) + convertHourToMinute(cargaHoraria1) + convertHourToMinute(batida3) - convertHourToMinute(batida2);
-    var batida4_8h = convertHourToMinute(batida1) + convertHourToMinute(cargaHoraria2) + convertHourToMinute(batida3) - convertHourToMinute(batida2);
-    var opJornada = "";
-
-    chrome.storage.sync.get('jornada', function (result) {
-      opJornada = result.jornada;
-
-      if (opJornada == "Ambas") {
-        $(".label").parent().append('<span class="label label-default">Saída estimada 6h: <strong>' + convertMinutesToHour(batida4_6h) + '<strong></span> ');
-        $(".label").parent().append('<span class="label label-default">Saída estimada 8h: <strong>' + convertMinutesToHour(batida4_8h) + '<strong></span> ');
-      }
-      else {
-        if (opJornada == '8h') {
-          $(".label").parent().append('<span class="label label-default">Saída estimada 8h: <strong>' + convertMinutesToHour(batida4_8h) + '<strong></span> ');
-        }
-        else {
-          $(".label").parent().append('<span class="label label-default">Saída estimada 6h: <strong>' + convertMinutesToHour(batida4_6h) + '<strong></span> ');
-        }
-      }
-    });
-  }
-  else {
-    if (batidas.length >= 1) {
-      var batida1 = batidas[0].textContent.split(" ")[1];
-
-      var batida1_6h = convertHourToMinute(batida1) + convertHourToMinute(cargaHoraria1) - convertHourToMinute("00:15");
-      var batida1_8h = convertHourToMinute(batida1) + convertHourToMinute(cargaHoraria2) + convertHourToMinute("1:00");
-      var opJornada = "";
-
-      chrome.storage.sync.get('jornada', function (result) {
-        opJornada = result.jornada;
-
-        if (opJornada == "Ambas") {
-          $(".label").parent().append('<span class="label label-default">Saída padrão 6h: <strong>' + convertMinutesToHour(batida1_6h) + '<strong></span> ');
-          $(".label").parent().append('<span class="label label-default">Saída padrão 8h: <strong>' + convertMinutesToHour(batida1_8h) + '<strong></span> ');
-        }
-        else {
-          if (opJornada == "8h") {
-            $(".label").parent().append('<span class="label label-default">Saída estimada 8h: <strong>' + convertMinutesToHour(batida1_8h) + '<strong></span> ');
-          }
-          else {
-            $(".label").parent().append('<span class="label label-default">Saída estimada 6h: <strong>' + convertMinutesToHour(batida1_6h) + '<strong></span> ');
-          }
-        }
-      });
+    var batida4 = convertHourToMinute(batida1) + convertHourToMinute(cargaHoraria) + convertHourToMinute(batida3) - convertHourToMinute(batida2);
+    $(".label").parent().append('<span class="label label-default bnb-ponto-web">Saída estimada: <strong>' + convertMinutesToHour(batida4) + '<strong></span> ');
+    
+  } else if (batidas.length >= 1) {
+    
+    var batida4;
+    if (cargaHoraria == "6:00") {
+      batida4 = convertHourToMinute(batida1) + convertHourToMinute(cargaHoraria) - convertHourToMinute("00:15");
+    } else {
+      batida4 = convertHourToMinute(batida1) + convertHourToMinute(cargaHoraria) + convertHourToMinute("0:30");
     }
+    $(".label").parent().append('<span class="label label-default bnb-ponto-web">Saída padrão: <strong>' + convertMinutesToHour(batida4) + '<strong></span> ');
+    
   }
+  
+  setTimeout("calcularSaida()", 30 * 1000);
+}
+
+function getDataHora() {
+  var dataHora;
+  $.ajaxSetup({ async: false });
+  $.get("/Pontoweb/Home/obterProximaBatida", function (data, status) {
+    dataHora = $(data).find("#DataHora").val().split(" ")[1];
+  });
+  return dataHora;
+}
+
+function getCargaHoraria() {
+  var cargaHoraria;
+  $.ajaxSetup({ async: false });
+  $.get("/Pontoweb/Home/obterProximaBatida", function (data, status) {
+    cargaHoraria = $(data).filter("#CargaHorariaFuncionario").val() + ":00";
+  });
+  return cargaHoraria;
 }
 
 function convertHourToMinute(time) {
