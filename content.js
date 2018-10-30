@@ -9,7 +9,7 @@ chrome.runtime.onMessage.addListener(
 
 function calcularSaida() {
   $(".bnb-ponto-web").remove();
-  var dataHora = getHora();
+  var dataHora = getDataHora();
   var cargaHoraria = getCargaHoraria();
   console.log("Data/Hora: " + dataHora);
   console.log("Carga Horária: " + cargaHoraria);
@@ -23,7 +23,7 @@ function calcularSaida() {
 
     var batida2 = batidas[1].textContent.split(" ")[1];
     var batida3 = batidas[2].textContent.split(" ")[1];
-    var batida4 = convertHourToMinute(batida1) + convertHourToMinute(cargaHoraria) + convertHourToMinute(batida3) - convertHourToMinute(batida2);
+    var batida4 = convertHourToMinute(batida1) + convertHourToMinute(cargaHoraria) + convertHourToMinute(batida3) - convertHourToMinute(batida2) - (cargaHoraria == "6:00" ? 15 : 0);
     $(".label").parent().append('<span class="label label-default bnb-ponto-web">Saída estimada: <strong>' + convertMinutesToHour(batida4) + '<strong></span> ');
 
   } else if (batidas.length >= 1) {
@@ -37,17 +37,17 @@ function calcularSaida() {
     $(".label").parent().append('<span class="label label-default bnb-ponto-web">Saída padrão: <strong>' + convertMinutesToHour(batida4) + '<strong></span> ');
 
   }
-
+  opcoes(cargaHoraria, batida2, batida3, batidas.length);
   setTimeout("calcularSaida()", 30 * 1000);
 }
 
-function getHora() {
-  var hora;
+function getDataHora() {
+  var dataHora;
   $.ajaxSetup({ async: false });
   $.get("/Pontoweb/Home/obterProximaBatida", function (data, status) {
-    hora = $(data).find("#DataHora").val().split(" ")[1];
+    dataHora = $(data).find("#DataHora").val().split(" ")[1];
   });
-  return hora;
+  return dataHora;
 }
 
 function getCargaHoraria() {
