@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 function saveOptions() {
   chrome.storage.sync.set({ previsaoRetorno: document.getElementById('previsaoRetorno').checked });
-  chrome.storage.sync.set({ duracaoIntervalo: document.getElementById('duracaoIntervalo').checked });  
+  chrome.storage.sync.set({ duracaoIntervalo: document.getElementById('duracaoIntervalo').checked });
 }
 
 
@@ -21,7 +21,7 @@ function loadSavedOptions() {
   chrome.storage.sync.get('previsaoRetorno', function (result) {
     opPrevisao = result.previsaoRetorno;
     if (opPrevisao)
-      document.getElementById('previsaoRetorno').checked = true;    
+      document.getElementById('previsaoRetorno').checked = true;
   });
 
   chrome.storage.sync.get('duracaoIntervalo', function (result) {
