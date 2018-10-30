@@ -3,66 +3,60 @@ chrome.runtime.onMessage.addListener(
     $(document).ready(function () {
       calcularSaida()
     });
-	sendResponse();
+    sendResponse();
   }
 );
 
 function calcularSaida() {
-  var cargaHoraria1 = "5:45";
-  var cargaHoraria2 = "8:00";
-  var batidas = $("#batidas").find("td");  
-  
+  $(".bnb-ponto-web").remove();
+  var dataHora = getDataHora();
+  var cargaHoraria = getCargaHoraria();
+  console.log("Data/Hora: " + dataHora);
+  console.log("Carga Horária: " + cargaHoraria);
+
+  $(".label").parent().append('<span class="label label-default bnb-ponto-web">' + dataHora + '<strong></span> ');
+
+  var batidas = $("#batidas").find("td");
+
+  var batida1 = batidas[0].textContent.split(" ")[1];
   if (batidas.length >= 3) {
-    var batida1 = batidas[0].textContent.split(" ")[1];
+
     var batida2 = batidas[1].textContent.split(" ")[1];
     var batida3 = batidas[2].textContent.split(" ")[1];
-    var batida4_6h = convertHourToMinute(batida1) + convertHourToMinute(cargaHoraria1) + convertHourToMinute(batida3) - convertHourToMinute(batida2);
-    var batida4_8h = convertHourToMinute(batida1) + convertHourToMinute(cargaHoraria2) + convertHourToMinute(batida3) - convertHourToMinute(batida2);    
-    var opJornada = "";
+    var batida4 = convertHourToMinute(batida1) + convertHourToMinute(cargaHoraria) + convertHourToMinute(batida3) - convertHourToMinute(batida2) - (cargaHoraria == "6:00" ? 15 : 0);
+    $(".label").parent().append('<span class="label label-default bnb-ponto-web">Saída estimada: <strong>' + convertMinutesToHour(batida4) + '<strong></span> ');
 
-    chrome.storage.sync.get('jornada', function(result) {
-      opJornada = result.jornada;   
-    
-      if (opJornada == "Ambas"){
-        $(".label").parent().append('<span class="label label-default">Saída estimada 6h: <strong>' + convertMinutesToHour(batida4_6h) + '<strong></span> ');
-        $(".label").parent().append('<span class="label label-default">Saída estimada 8h: <strong>' + convertMinutesToHour(batida4_8h) + '<strong></span> ');
-      }
-      else{
-        if (opJornada == '8h'){
-          $(".label").parent().append('<span class="label label-default">Saída estimada 8h: <strong>' + convertMinutesToHour(batida4_8h) + '<strong></span> ');	  
-        }
-        else{
-          $(".label").parent().append('<span class="label label-default">Saída estimada 6h: <strong>' + convertMinutesToHour(batida4_6h) + '<strong></span> ');  
-        }
-      }
-    });
-  }
-  else{
-    if (batidas.length >= 1){    
-      var batida1 = batidas[0].textContent.split(" ")[1];    
-      
-      var batida1_6h = convertHourToMinute(batida1) + convertHourToMinute(cargaHoraria1) - convertHourToMinute("00:15");
-      var batida1_8h = convertHourToMinute(batida1) + convertHourToMinute(cargaHoraria2) + convertHourToMinute("1:00");  
-      var opJornada = "";
+  } else if (batidas.length >= 1) {
 
-      chrome.storage.sync.get('jornada', function(result) {
-        opJornada = result.jornada;   
-
-        if (opJornada == "Ambas"){
-          $(".label").parent().append('<span class="label label-default">Saída padrão 6h: <strong>' + convertMinutesToHour(batida1_6h) + '<strong></span> ');
-          $(".label").parent().append('<span class="label label-default">Saída padrão 8h: <strong>' + convertMinutesToHour(batida1_8h) + '<strong></span> ');
-        }
-        else{
-          if (opJornada == "8h"){
-            $(".label").parent().append('<span class="label label-default">Saída estimada 8h: <strong>' + convertMinutesToHour(batida1_8h) + '<strong></span> ');	  
-          }
-          else{
-            $(".label").parent().append('<span class="label label-default">Saída estimada 6h: <strong>' + convertMinutesToHour(batida1_6h) + '<strong></span> ');  
-          }
-        }
-      });
+    var batida4;
+    if (cargaHoraria == "6:00") {
+      batida4 = convertHourToMinute(batida1) + convertHourToMinute(cargaHoraria) - convertHourToMinute("00:15");
+    } else {
+      batida4 = convertHourToMinute(batida1) + convertHourToMinute(cargaHoraria) + convertHourToMinute("0:30");
     }
+    $(".label").parent().append('<span class="label label-default bnb-ponto-web">Saída padrão: <strong>' + convertMinutesToHour(batida4) + '<strong></span> ');
+
   }
+  opcoes(cargaHoraria, batida2, batida3, batidas.length);
+  setTimeout("calcularSaida()", 30 * 1000);
+}
+
+function getDataHora() {
+  var dataHora;
+  $.ajaxSetup({ async: false });
+  $.get("/Pontoweb/Home/obterProximaBatida", function (data, status) {
+    dataHora = $(data).find("#DataHora").val().split(" ")[1];
+  });
+  return dataHora;
+}
+
+function getCargaHoraria() {
+  var cargaHoraria;
+  $.ajaxSetup({ async: false });
+  $.get("/Pontoweb/Home/obterProximaBatida", function (data, status) {
+    cargaHoraria = $(data).filter("#CargaHorariaFuncionario").val() + ":00";
+  });
+  return cargaHoraria;
 }
 
 function convertHourToMinute(time) {
@@ -74,7 +68,26 @@ function convertMinutesToHour(minutes) {
   var hour = parseInt(minutes) / 60;
   var minute = parseInt(minutes) % 60;
   if (minute < 10)
-	return parseInt(hour) + ":0" + parseInt(minute);
+    return parseInt(hour) + ":0" + parseInt(minute);
   else
-	return parseInt(hour) + ":" + parseInt(minute);
+    return parseInt(hour) + ":" + parseInt(minute);
+}
+
+function opcoes(cargaHoraria, batida2, batida3, qtdBatidas) {
+  chrome.storage.sync.get('previsaoRetorno', function (result) {
+    opPrevisao = result.previsaoRetorno;
+    //console.log(opPrevisao);
+    if (opPrevisao && qtdBatidas < 3) {
+      if (cargaHoraria == "6:00")
+        $(".label").parent().append('<span class="label label-default bnb-ponto-web">Prev. Retorno Intervalo: <strong>' + convertMinutesToHour(convertHourToMinute(batida2) + 15) + '<strong></span> ');
+      else
+        $(".label").parent().append('<span class="label label-default bnb-ponto-web">Prev. Retorno Intervalo: <strong>' + convertMinutesToHour(convertHourToMinute(batida2) + 30) + '<strong></span> ');
+    }
+  });
+  chrome.storage.sync.get('duracaoIntervalo', function (result) {
+    opDuracao = result.duracaoIntervalo;
+    //console.log(opDuracao);
+    if (opDuracao)
+      $(".label").parent().append('<span class="label label-default bnb-ponto-web">Duração do Intervalo: <strong>' + convertMinutesToHour(convertHourToMinute(batida3) - convertHourToMinute(batida2)) + '<strong></span> ');
+  });
 }

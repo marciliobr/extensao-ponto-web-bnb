@@ -1,23 +1,148 @@
 <!DOCTYPE html>
-  <html>
-    <head>
-	<title>Escolha da Carga Hor�ria da Jornada</title>
-      <style>
-		body {
-	      min-width: 300px;
-          font-size: 15px;
-		}
-		input {
-		  margin: 5px;
-		  outline: none;
-		}
-	  </style>
-    </head>
+<html>
+<meta charset="utf-8" />
+
+<head>
+  <title>Opções para personalizar a utilização da extensão</title>
+  <style>
+    /*Auto Clear*/
+.option-group:after { content: "."; display: block; height: 0; clear: both; visibility: hidden; }
+body { 
+	margin:0;
+	padding:10px 0 0 10px;
+	background-color: #eee;
+	font-size:.9em;
+	font-family: verdana, helvetica, arial, sans-serif;
+}
+* {
+	_margin:0;
+	_padding:0;
+}
+h2,h3,h4 {
+	margin: 0px 0px 15px 0px;
+	color: #999;
+	font-weight: normal;
+}
+a,
+a:link,
+a:visited,
+a:hover,
+a:active {
+	color: #da791e;
+	text-decoration: none;
+}
+a:hover {
+	text-decoration: underline;
+}
+.mainWrapper {
+	background-color: #fff;
+	width: 600px;
+	margin: 0 auto;
+	border-radius: 18px;
+	border: 1px solid #ddd;
+}
+p {
+	margin: 4px 0px;
+}
+fieldset {
+	clear: both;
+}
+.stepLeft {
+	float: left;
+	width: 270px;
+}
+#apps-new {
 	
-    <body>
-	  <h2>Escolha da Carga Hor�ria da Jornada</h2>
-      <div id="buttonDiv">
-      </div>      
-    </body>
-    <script src="options.js"></script>
-  </html>
+}
+#apps-new p {
+	padding-bottom: 10px;
+}
+.stepRight {
+	border-left:1px solid #DDDDDD;
+	float:right;
+	margin-top: -42px;
+	padding-left:21px;
+	width:283px;
+}
+.stepRight p{
+	padding: 6px 0px 6px 6px;
+	background-color: #eaeaea;
+	border: 1px solid #efefef;
+	border-radius: 5px;
+}
+.option-group {
+	padding-bottom:5px;
+	margin-bottom:5px;
+	border-bottom:1px dotted #efefef;
+}
+#theme-options {
+	position:relative;
+	min-height:220px;
+	padding-top: 40px;
+}
+#theme-options p {
+	float:left;
+	margin:0 0 16px;
+	text-align:left;
+	width:355px;
+}
+.stepRight label {
+}
+#switcher {
+	float: right;
+}
+#yahoozie, #hotmailzie, #gmailzie {
+	padding-bottom: 10px;
+}
+h1 { 
+	background:url(images/sendthru_logo.png) no-repeat bottom center;
+	height:70px;
+}
+h1 span{ 
+	display: block;
+	text-indent: -9999px;
+}
+fieldset {
+	border: none;
+}
+.errors img {
+	margin-right: 10px;
+}
+#awesome.ui-dialog-titlebar {
+	padding:3px 0 1px 6px;
+}
+#awesome.ui-dialog-titlebar .ui-dialog-title {
+	display:block;
+	float:left;
+	margin:0.1em 0 0.2em;
+	padding:4px 0 5px 40px;
+	border-radius: 7px;
+}
+  </style>
+</head>
+
+<body>
+  <h2>Exibir previsão de retorno do almoço</h2>
+  <form action="javascript:saveOptions()">
+    <fieldset id="opcoes">
+      <div class="google option-group">
+        <h3>Previsão de Retorno do Intervalo</h3>
+        <div id="gmailzie">
+          <input type="checkbox" id="previsaoRetorno" />
+          <label for="previsaoRetorno">Incluir a previsão de retorno do intervalo com base na primeira batida</label>
+        </div>
+      </div>
+      <div class="yahoo option-group">
+        <h3>Duração Real do Intervalo</h3>
+        <div id="yahoozie">
+          <input type="checkbox" id="duracaoIntervalo" />
+          <label for="duracaoIntervalo">Incluir a duração real entre as batidas do intervalo</label>
+        </div>
+      </div>
+    </fieldset>
+  </form>
+</body>
+
+<script src="options.js"></script>
+
+</html>
