@@ -9,11 +9,11 @@ chrome.runtime.onMessage.addListener(
 
 function calcularSaida() {
   $(".bnb-ponto-web").remove();
-  var dataHora = getDataHora();
+  var dataHora = getHora();
   var cargaHoraria = getCargaHoraria();
   console.log("Data/Hora: " + dataHora);
   console.log("Carga Horária: " + cargaHoraria);
-  
+
   $(".label").parent().append('<span class="label label-default bnb-ponto-web">' + dataHora + '<strong></span> ');
 
   var batidas = $("#batidas").find("td");
@@ -25,9 +25,9 @@ function calcularSaida() {
     var batida3 = batidas[2].textContent.split(" ")[1];
     var batida4 = convertHourToMinute(batida1) + convertHourToMinute(cargaHoraria) + convertHourToMinute(batida3) - convertHourToMinute(batida2);
     $(".label").parent().append('<span class="label label-default bnb-ponto-web">Saída estimada: <strong>' + convertMinutesToHour(batida4) + '<strong></span> ');
-    
+
   } else if (batidas.length >= 1) {
-    
+
     var batida4;
     if (cargaHoraria == "6:00") {
       batida4 = convertHourToMinute(batida1) + convertHourToMinute(cargaHoraria) - convertHourToMinute("00:15");
@@ -35,19 +35,19 @@ function calcularSaida() {
       batida4 = convertHourToMinute(batida1) + convertHourToMinute(cargaHoraria) + convertHourToMinute("0:30");
     }
     $(".label").parent().append('<span class="label label-default bnb-ponto-web">Saída padrão: <strong>' + convertMinutesToHour(batida4) + '<strong></span> ');
-    
+
   }
-  
+
   setTimeout("calcularSaida()", 30 * 1000);
 }
 
-function getDataHora() {
-  var dataHora;
+function getHora() {
+  var hora;
   $.ajaxSetup({ async: false });
   $.get("/Pontoweb/Home/obterProximaBatida", function (data, status) {
-    dataHora = $(data).find("#DataHora").val().split(" ")[1];
+    hora = $(data).find("#DataHora").val().split(" ")[1];
   });
-  return dataHora;
+  return hora;
 }
 
 function getCargaHoraria() {
@@ -71,4 +71,23 @@ function convertMinutesToHour(minutes) {
     return parseInt(hour) + ":0" + parseInt(minute);
   else
     return parseInt(hour) + ":" + parseInt(minute);
+}
+
+function opcoes(cargaHoraria, batida2, batida3, qtdBatidas) {
+  chrome.storage.sync.get('previsaoRetorno', function (result) {
+    opPrevisao = result.previsaoRetorno;
+    //console.log(opPrevisao);
+    if (opPrevisao && qtdBatidas < 3) {
+      if (cargaHoraria == "6:00")
+        $(".label").parent().append('<span class="label label-default bnb-ponto-web">Prev. Retorno Intervalo: <strong>' + convertMinutesToHour(convertHourToMinute(batida2) + 15) + '<strong></span> ');
+      else
+        $(".label").parent().append('<span class="label label-default bnb-ponto-web">Prev. Retorno Intervalo: <strong>' + convertMinutesToHour(convertHourToMinute(batida2) + 30) + '<strong></span> ');
+    }
+  });
+  chrome.storage.sync.get('duracaoIntervalo', function (result) {
+    opDuracao = result.duracaoIntervalo;
+    //console.log(opDuracao);
+    if (opDuracao)
+      $(".label").parent().append('<span class="label label-default bnb-ponto-web">Duração do Intervalo: <strong>' + convertMinutesToHour(convertHourToMinute(batida3) - convertHourToMinute(batida2)) + '<strong></span> ');
+  });
 }
