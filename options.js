@@ -1,32 +1,30 @@
 document.addEventListener('DOMContentLoaded', function () {
   loadSavedOptions();
-  var previsao = document.getElementById('previsaoRetorno');
-  var duracao = document.getElementById('duracaoIntervalo');
-  // onClick's logic below:
-  previsao.addEventListener('click', function () {
-    saveOptions();
-  });
-  duracao.addEventListener('click', function () {
-    saveOptions();
-  });
+  document.getElementById('previsaoRetorno').addEventListener('click', function () { saveOptions(); });
+  document.getElementById('duracaoIntervalo').addEventListener('click', function () { saveOptions(); });
+  document.getElementById('calcularHoraExtra').addEventListener('click', function () { saveOptions(); });
 });
 
 function saveOptions() {
   chrome.storage.sync.set({ previsaoRetorno: document.getElementById('previsaoRetorno').checked });
   chrome.storage.sync.set({ duracaoIntervalo: document.getElementById('duracaoIntervalo').checked });
+  chrome.storage.sync.set({ calcularHoraExtra: document.getElementById('calcularHoraExtra').checked });
 }
 
 
 function loadSavedOptions() {
   chrome.storage.sync.get('previsaoRetorno', function (result) {
-    opPrevisao = result.previsaoRetorno;
-    if (opPrevisao)
+    if (result.previsaoRetorno)
       document.getElementById('previsaoRetorno').checked = true;
   });
 
   chrome.storage.sync.get('duracaoIntervalo', function (result) {
-    opDuracao = result.duracaoIntervalo;
-    if (opDuracao)
+    if (result.duracaoIntervalo)
       document.getElementById('duracaoIntervalo').checked = true;
+  });
+
+  chrome.storage.sync.get('calcularHoraExtra', function (result) {
+    if (result.calcularHoraExtra)
+      document.getElementById('calcularHoraExtra').checked = true;
   });
 }
