@@ -1,8 +1,8 @@
 function atualizarRelogio() {
   let hora = null;
   $.ajaxSetup({ async: false });
-  $.get("/Pontoweb/Home/obterProximaBatida", function (data, status) {
-    hora = $(data).find("#DataHora").val().split(" ")[1];
+  $.get("/Pontoweb/Home/getTime", function (data, status) {
+    hora = data.split(" ")[1];
   });
   $("#bnb-ponto-web-relogio").text(hora)
   setTimeout("atualizarRelogio()", 30 * 1000);
