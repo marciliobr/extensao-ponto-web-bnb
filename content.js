@@ -1,10 +1,22 @@
-function atualizarRelogio() {
-  let hora = null;
+function formatLeftZero(num) {
+  if (parseInt(num) < 10)
+    return "0" + num;
+  return num;
+}
+
+function getDateTime() {
+  let dateTime = null;
   $.ajaxSetup({ async: false });
   $.get("/Pontoweb/Home/getTime", function (data, status) {
-    hora = data.split(" ")[1];
+    dateTime = (status == "success") ? new Date(data) : null;
   });
-  $("#bnb-ponto-web-relogio").text(hora)
+  return dateTime;
+}
+
+function atualizarRelogio() {
+  let dateTime = getDateTime();
+  let horaFormatada = formatLeftZero(dateTime.getHours()) + ":" + formatLeftZero(dateTime.getMinutes()) + ":" + formatLeftZero(dateTime.getSeconds());
+  $("#bnb-ponto-web-relogio").text(horaFormatada);
   setTimeout("atualizarRelogio()", 30 * 1000);
 }
 
@@ -13,29 +25,31 @@ function convertMinutesToHour(minutes) {
     return null;
   let hour = parseInt(minutes / 60);
   let minute = parseInt(minutes % 60);
-  return ((hour < 10) ? "0" + hour : hour) + ":" + ((minute < 10) ? "0" + minute : minute);
+  return formatLeftZero(hour) + ":" + formatLeftZero(minute);
 }
 
-function convertHourToMinute(time) {
-  if (time == null || time == "")
+function convertHourToMinute(dateTime) {
+  if (dateTime == null || dateTime == "")
     return null;
 
-  let arrTime = time.toString().split(":");
-  return parseInt(arrTime[0] * 60) + parseInt(arrTime[1]);
+  return parseInt(dateTime.getHours() * 60) + parseInt(dateTime.getMinutes());
 }
 
 class Batidas {
-  constructor(batidas) {
+  constructor() {
+    this.obterBatidas();
     this.obterCargaHoraria();
-    this._batida1 = batidas.length > 0 ? convertHourToMinute(batidas[0].textContent.split(" ")[1]) : null;
-    this._batida2 = batidas.length > 1 ? convertHourToMinute(batidas[1].textContent.split(" ")[1]) : null;
-    this._batida3 = batidas.length > 2 ? convertHourToMinute(batidas[2].textContent.split(" ")[1]) : null;
-    this._batida4 = batidas.length > 3 ? convertHourToMinute(batidas[3].textContent.split(" ")[1]) : null;
+    this._batida1 = convertHourToMinute(this.batidas[0]);
+    this._batida2 = convertHourToMinute(this.batidas[1]);
+    this._batida3 = convertHourToMinute(this.batidas[2]);
+    this._batida4 = convertHourToMinute(this.batidas[3]);
     this._saidaEstimada = null;
-    this._quantidade = batidas.length;
+    this._quantidade = this.batidas.length;
     this.calcularSaidaEstimada();
   }
-
+  get batidas() {
+    return this._batidas;
+  }
   get batida1() {
     return this._batida1;
   }
@@ -56,6 +70,14 @@ class Batidas {
   }
   get cargaHoraria() {
     return this._cargaHoraria;
+  }
+  obterBatidas() {
+    if (this._batidas == null) {
+      var batidas = [];
+      $.ajaxSetup({ async: false });
+      $.get("/Pontoweb/api/batidas", function (data, status) { data.map(batida => batidas.push(new Date(batida.datahora))); });
+    }
+    this._batidas = batidas;
   }
   obterCargaHoraria() {
     if (this._cargaHoraria == null) {
@@ -89,11 +111,12 @@ class Batidas {
       $(".label").parent().append('<span class="label label-default">Duração do Intervalo: <strong>' + convertMinutesToHour(this.batida3 - this.batida2) + '<strong></span> ');
   }
   mostrarHoraExtra() {
-    if (this.quantidade == 4) {
-      if (this.saidaEstimada < this.batida4) {
-        $(".label").parent().append('<span class="label label-default">Hora Extra: <strong>' + convertMinutesToHour(this.batida4 - this.saidaEstimada) + '<strong></span> ');
-      } else if (this.saidaEstimada > this.batida4) {
-        $(".label").parent().append('<span class="label label-default">Hora à Compensar: <strong>' + convertMinutesToHour(this.saidaEstimada - this.batida4) + '<strong></span> ');
+    if (this.quantidade >= 3) {
+      let baseComparacao = this.batida4 == null ? convertHourToMinute(getDateTime()) : this.batida4;
+      if (this.saidaEstimada < baseComparacao) {
+        $(".label").parent().append('<span class="label label-default">Hora Extra: <strong>' + convertMinutesToHour(baseComparacao - this.saidaEstimada) + '<strong></span> ');
+      } else if (this.saidaEstimada > baseComparacao) {
+        $(".label").parent().append('<span class="label label-default">Hora à Compensar: <strong>' + convertMinutesToHour(this.saidaEstimada - baseComparacao) + '<strong></span> ');
       }
     }
   }
@@ -107,8 +130,7 @@ chrome.runtime.onMessage.addListener(
       atualizarRelogio();
 
       // Calculando hora de saída
-      // $("#batidas").find("td:last").remove();
-      let batidas = new Batidas($("#batidas").find("td"));
+      let batidas = new Batidas();
       batidas.mostrarSaidaEstimada();
       verificarOpcoesUsuario(batidas);
     });
