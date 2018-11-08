@@ -18,6 +18,7 @@ function atualizarRelogio() {
   let horaFormatada = formatLeftZero(dateTime.getHours()) + ":" + formatLeftZero(dateTime.getMinutes()) + ":" + formatLeftZero(dateTime.getSeconds());
   $("#bnb-ponto-web-relogio").text(horaFormatada);
   setTimeout("atualizarRelogio()", 30 * 1000);
+  console.log("triggering atualizarRelogio()");
 }
 
 function convertMinutesToHour(minutes) {
@@ -39,33 +40,42 @@ class Batidas {
   constructor() {
     this.obterBatidas();
     this.obterCargaHoraria();
-    this._batida1 = convertHourToMinute(this.batidas[0]);
-    this._batida2 = convertHourToMinute(this.batidas[1]);
-    this._batida3 = convertHourToMinute(this.batidas[2]);
-    this._batida4 = convertHourToMinute(this.batidas[3]);
-    this._saidaEstimada = null;
-    this._quantidade = this.batidas.length;
-    this.calcularSaidaEstimada();
+    this.obterSaidaEstimada();
   }
   get batidas() {
     return this._batidas;
   }
   get batida1() {
+    if (this._batida1 == null) {
+      this._batida1 = convertHourToMinute(this.batidas[0]);
+    }
     return this._batida1;
   }
   get batida2() {
+    if (this._batida2 == null) {
+      this._batida2 = convertHourToMinute(this.batidas[1]);
+    }
     return this._batida2;
   }
   get batida3() {
+    if (this._batida3 == null) {
+      this._batida3 = convertHourToMinute(this.batidas[2]);
+    }
     return this._batida3;
   }
   get batida4() {
+    if (this._batida4 == null) {
+      this._batida4 = convertHourToMinute(this.batidas[3]);
+    }
     return this._batida4;
   }
   get saidaEstimada() {
     return this._saidaEstimada;
   }
   get quantidade() {
+    if (this._quantidade == null) {
+      this._quantidade = this.batidas.length;
+    }
     return this._quantidade;
   }
   get cargaHoraria() {
@@ -90,34 +100,33 @@ class Batidas {
     }
     this._cargaHoraria = cargaHoraria;
   }
-  calcularSaidaEstimada() {
+  obterSaidaEstimada() {
     if (this.quantidade < 3) {
       this._saidaEstimada = this.batida1 + this.cargaHoraria - (this.cargaHoraria == 360 ? 15 : -30);
     } else {
       this._saidaEstimada = this.batida1 + this.cargaHoraria + this.batida3 - this.batida2 - (this.cargaHoraria == 360 ? 15 : 0);
     }
-    return this.saidaEstimada;
   }
   mostrarSaidaEstimada() {
     if (this.quantidade > 0)
-      $(".label").parent().append('<span class="label label-default">Saída estimada: <strong>' + convertMinutesToHour(this.saidaEstimada) + '<strong></span> ');
+      $("#bnb-ponto-web-info").append('<span class="label">Saída estimada: <strong>' + convertMinutesToHour(this.saidaEstimada) + '</strong></span>');
   }
   mostrarPrevisaoRetorno() {
     if (this.quantidade == 2)
-      $(".label").parent().append('<span class="label label-default ">Prev. Retorno Intervalo: <strong>' + convertMinutesToHour(this.batida2 + (this.cargaHoraria == 360 ? 15 : 30)) + '<strong></span> ');
+      $("#bnb-ponto-web-info").append('<span class="label">Prev. Retorno Intervalo: <strong>' + convertMinutesToHour(this.batida2 + (this.cargaHoraria == 360 ? 15 : 30)) + '</strong></span>');
   }
   mostrarDuracaoIntervalo() {
     if (this.quantidade > 2)
-      $(".label").parent().append('<span class="label label-default">Duração do Intervalo: <strong>' + convertMinutesToHour(this.batida3 - this.batida2) + '<strong></span> ');
+      $("#bnb-ponto-web-info").append('<span class="label">Duração do Intervalo: <strong>' + convertMinutesToHour(this.batida3 - this.batida2) + '</strong></span>');
   }
   mostrarHoraExtra() {
     if (this.quantidade >= 3) {
       let baseComparacao = this.batida4 == null ? convertHourToMinute(getDateTime()) : this.batida4;
-      if (this.saidaEstimada < baseComparacao) {
-        $(".label").parent().append('<span class="label label-default">Hora Extra: <strong>' + convertMinutesToHour(baseComparacao - this.saidaEstimada) + '<strong></span> ');
-      } else if (this.saidaEstimada > baseComparacao) {
-        $(".label").parent().append('<span class="label label-default">Hora à Compensar: <strong>' + convertMinutesToHour(this.saidaEstimada - baseComparacao) + '<strong></span> ');
-      }
+      $("#bnb-ponto-web-he").remove();
+      if (this.saidaEstimada < baseComparacao)
+        $("#bnb-ponto-web-info").append('<span id="bnb-ponto-web-he" class="label" title="Pressione F5 para atualizar">Extra: <strong>' + convertMinutesToHour(baseComparacao - this.saidaEstimada) + '</strong></span>');
+      else if (this.saidaEstimada > baseComparacao)
+        $("#bnb-ponto-web-info").append('<span id="bnb-ponto-web-he" class="label" title="Pressione F5 para atualizar">Compensar: <strong>' + convertMinutesToHour(this.saidaEstimada - baseComparacao) + '</strong></span>');
     }
   }
 }
@@ -126,10 +135,13 @@ chrome.runtime.onMessage.addListener(
   function (request, sender, sendResponse) {
     $(document).ready(function () {
       // Criando label do horário
-      $(".label").parent().append('<span id="bnb-ponto-web-relogio" class="label label-default"></span> ');
+      $("#bnb-ponto-web-relogio").remove();
+      $("body > div.container > div:nth-child(3) > h3").append('<span id="bnb-ponto-web-relogio" class="label label-primary" />');
       atualizarRelogio();
 
       // Calculando hora de saída
+      $("#bnb-ponto-web-info").remove();
+      $("body > div.container > div:nth-child(3) > h3").append('<div id="bnb-ponto-web-info" style="margin-top: 10px; clear: both;" />');
       let batidas = new Batidas();
       batidas.mostrarSaidaEstimada();
       verificarOpcoesUsuario(batidas);
