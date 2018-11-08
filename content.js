@@ -143,7 +143,6 @@ chrome.runtime.onMessage.addListener(
       $("#bnb-ponto-web-info").remove();
       $("body > div.container > div:nth-child(3) > h3").append('<div id="bnb-ponto-web-info" style="margin-top: 10px; clear: both;" />');
       let batidas = new Batidas();
-      batidas.mostrarSaidaEstimada();
       verificarOpcoesUsuario(batidas);
     });
     sendResponse();
@@ -159,6 +158,11 @@ function verificarOpcoesUsuario(batidas) {
   chrome.storage.sync.get('duracaoIntervalo', function (result) {
     if (result.duracaoIntervalo) {
       batidas.mostrarDuracaoIntervalo();
+    }
+  });
+  chrome.storage.sync.get('saidaEstimada', function (result) {
+    if (result.saidaEstimada) {
+      batidas.mostrarSaidaEstimada();
     }
   });
   chrome.storage.sync.get('calcularHoraExtra', function (result) {
