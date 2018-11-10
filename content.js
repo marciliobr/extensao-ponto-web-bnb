@@ -46,36 +46,31 @@ class Batidas {
     return this._batidas;
   }
   get batida1() {
-    if (this._batida1 == null) {
+    if (this._batida1 == null)
       this._batida1 = convertHourToMinute(this.batidas[0]);
-    }
     return this._batida1;
   }
   get batida2() {
-    if (this._batida2 == null) {
+    if (this._batida2 == null)
       this._batida2 = convertHourToMinute(this.batidas[1]);
-    }
     return this._batida2;
   }
   get batida3() {
-    if (this._batida3 == null) {
+    if (this._batida3 == null)
       this._batida3 = convertHourToMinute(this.batidas[2]);
-    }
     return this._batida3;
   }
   get batida4() {
-    if (this._batida4 == null) {
+    if (this._batida4 == null)
       this._batida4 = convertHourToMinute(this.batidas[3]);
-    }
     return this._batida4;
   }
   get saidaEstimada() {
     return this._saidaEstimada;
   }
   get quantidade() {
-    if (this._quantidade == null) {
+    if (this._quantidade == null)
       this._quantidade = this.batidas.length;
-    }
     return this._quantidade;
   }
   get cargaHoraria() {
@@ -101,73 +96,81 @@ class Batidas {
     this._cargaHoraria = cargaHoraria;
   }
   obterSaidaEstimada() {
-    if (this.quantidade < 3) {
+    if (this.quantidade < 3)
       this._saidaEstimada = this.batida1 + this.cargaHoraria - (this.cargaHoraria == 360 ? 15 : -30);
-    } else {
+    else
       this._saidaEstimada = this.batida1 + this.cargaHoraria + this.batida3 - this.batida2 - (this.cargaHoraria == 360 ? 15 : 0);
-    }
   }
   mostrarSaidaEstimada() {
+    $("#bnb-ponto-web-info-saida-estimada").remove();
     if (this.quantidade > 0)
-      $("#bnb-ponto-web-info").append('<span class="label">Saída estimada: <strong>' + convertMinutesToHour(this.saidaEstimada) + '</strong></span>');
+      $("#bnb-ponto-web-info").append('<span id="bnb-ponto-web-info-saida-estimada" class="label">Saída estimada: <strong>' + convertMinutesToHour(this.saidaEstimada) + '</strong></span>');
   }
   mostrarPrevisaoRetorno() {
+    $("#bnb-ponto-web-info-previsao-retorno").remove();
     if (this.quantidade == 2)
-      $("#bnb-ponto-web-info").append('<span class="label">Prev. Retorno Intervalo: <strong>' + convertMinutesToHour(this.batida2 + (this.cargaHoraria == 360 ? 15 : 30)) + '</strong></span>');
+      $("#bnb-ponto-web-info").append('<span id="bnb-ponto-web-info-previsao-retorno" class="label">Prev. Retorno Intervalo: <strong>' + convertMinutesToHour(this.batida2 + (this.cargaHoraria == 360 ? 15 : 30)) + '</strong></span>');
   }
   mostrarDuracaoIntervalo() {
+    $("#bnb-ponto-web-info-duracao-intervalo").remove();
     if (this.quantidade > 2)
-      $("#bnb-ponto-web-info").append('<span class="label">Duração do Intervalo: <strong>' + convertMinutesToHour(this.batida3 - this.batida2) + '</strong></span>');
+      $("#bnb-ponto-web-info").append('<span id="bnb-ponto-web-info-duracao-intervalo" class="label">Duração do Intervalo: <strong>' + convertMinutesToHour(this.batida3 - this.batida2) + '</strong></span>');
   }
   mostrarHoraExtra() {
+    $("#bnb-ponto-web-info-hora-extra").remove();
     if (this.quantidade >= 3) {
       let baseComparacao = this.batida4 == null ? convertHourToMinute(getDateTime()) : this.batida4;
-      $("#bnb-ponto-web-he").remove();
       if (this.saidaEstimada < baseComparacao)
-        $("#bnb-ponto-web-info").append('<span id="bnb-ponto-web-he" class="label" title="Pressione F5 para atualizar">Extra: <strong>' + convertMinutesToHour(baseComparacao - this.saidaEstimada) + '</strong></span>');
+        $("#bnb-ponto-web-info").append('<span id="bnb-ponto-web-info-hora-extra" class="label" title="Pressione F5 para atualizar">Extra: <strong>' + convertMinutesToHour(baseComparacao - this.saidaEstimada) + '</strong></span>');
       else if (this.saidaEstimada > baseComparacao)
-        $("#bnb-ponto-web-info").append('<span id="bnb-ponto-web-he" class="label" title="Pressione F5 para atualizar">Compensar: <strong>' + convertMinutesToHour(this.saidaEstimada - baseComparacao) + '</strong></span>');
+        $("#bnb-ponto-web-info").append('<span id="bnb-ponto-web-info-hora-extra" class="label" title="Pressione F5 para atualizar">Compensar: <strong>' + convertMinutesToHour(this.saidaEstimada - baseComparacao) + '</strong></span>');
     }
   }
 }
 
-chrome.runtime.onMessage.addListener(
-  function (request, sender, sendResponse) {
-    $(document).ready(function () {
-      // Criando label do horário
-      $("#bnb-ponto-web-relogio").remove();
-      $("body > div.container > div:nth-child(3) > h3").append('<span id="bnb-ponto-web-relogio" class="label label-primary" />');
-      atualizarRelogio();
+chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+  $(document).ready(function () {
+    // Criando label do horário
+    $("#bnb-ponto-web-relogio").remove();
+    $("body > div.container > div:nth-child(3) > h3").append('<span id="bnb-ponto-web-relogio" class="label label-primary" />');
+    atualizarRelogio();
 
-      // Calculando hora de saída
-      $("#bnb-ponto-web-info").remove();
-      $("body > div.container > div:nth-child(3) > h3").append('<div id="bnb-ponto-web-info" style="margin-top: 10px; clear: both;" />');
-      let batidas = new Batidas();
-      verificarOpcoesUsuario(batidas);
+    // Criando label das informações
+    $("#bnb-ponto-web-info").remove();
+    $("body > div.container > div:nth-child(3) > h3").append('<div id="bnb-ponto-web-info" style="margin-top: 10px; clear: both;" />');
+
+    // Calculando hora de saída
+    verificarOpcoesUsuario();
+
+    // Correção de padding
+    $("body > div.container > div:nth-child(3)").css("padding-bottom", "10px");
+
+    // Adicionando trigger na tabela
+    document.getElementById("batidas").addEventListener('DOMNodeInserted', function (event) {
+      verificarOpcoesUsuario();
     });
-    sendResponse();
-  }
-);
+  });
+  sendResponse();
+});
 
-function verificarOpcoesUsuario(batidas) {
+function verificarOpcoesUsuario() {
+  let batidas = new Batidas();
+
   chrome.storage.sync.get('previsaoRetorno', function (result) {
-    if (result.previsaoRetorno) {
+    if (result.previsaoRetorno)
       batidas.mostrarPrevisaoRetorno();
-    }
   });
   chrome.storage.sync.get('duracaoIntervalo', function (result) {
-    if (result.duracaoIntervalo) {
+    if (result.duracaoIntervalo)
       batidas.mostrarDuracaoIntervalo();
-    }
   });
   chrome.storage.sync.get('saidaEstimada', function (result) {
-    if (result.saidaEstimada) {
+    if (result.saidaEstimada)
       batidas.mostrarSaidaEstimada();
-    }
   });
   chrome.storage.sync.get('calcularHoraExtra', function (result) {
-    if (result.calcularHoraExtra) {
+    if (result.calcularHoraExtra)
       batidas.mostrarHoraExtra();
-    }
   });
+  setTimeout("verificarOpcoesUsuario()", 60 * 1000);
 }
