@@ -1,7 +1,6 @@
 {
   "manifest_version": 2,
   "name": "Cálculo de horário de saída",
-  "options_page": "options.html",
   "description": "Essa extensão faz algo muito simples que o sistema de ponto não faz.",
   "version": "1.0",
   "page_action": {
