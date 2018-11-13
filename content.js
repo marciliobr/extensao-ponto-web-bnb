@@ -144,13 +144,14 @@ class Batidas {
       $("#bnb-ponto-web-info").append('<span id="bnb-ponto-web-info-duracao-intervalo" class="label">Duração do Intervalo: <strong>' + convertMinutesToHour(this.batida3 - this.batida2) + '</strong></span>');
   }
   mostrarHoraExtra() {
-    $("#bnb-ponto-web-info-hora-extra").remove();
+    $("#bnb-ponto-web-info-hora-extra, #bnb-ponto-web-info-hora-extra-maxima").remove();
 
     if (this.quantidade >= 3) {
       let baseComparacao = this.batida4 == null ? convertTimeToMinute(getDateTime()) : this.batida4;
-      if (this.saidaEstimada < baseComparacao)
+      if (this.saidaEstimada < baseComparacao) {
         $("#bnb-ponto-web-info").append('<span id="bnb-ponto-web-info-hora-extra" class="label">Extra: <strong>' + convertMinutesToHour(baseComparacao - this.saidaEstimada) + '</strong></span>');
-      else if (this.saidaEstimada > baseComparacao)
+        $("#bnb-ponto-web-info").append('<span id="bnb-ponto-web-info-hora-extra-maxima" class="label">Limite de Saída: <strong>' + convertMinutesToHour(this.saidaEstimada + 120 + (this.cargaHoraria == 360 ? 15 : 0)) + '</strong></span>');
+      } else if (this.saidaEstimada > baseComparacao)
         $("#bnb-ponto-web-info").append('<span id="bnb-ponto-web-info-hora-extra" class="label">Compensar: <strong>' + convertMinutesToHour(this.saidaEstimada - baseComparacao) + '</strong></span>');
     }
   }
