@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "Cálculo de horário de saída",
   "description": "Essa extensão faz algo muito simples que o sistema de ponto não faz.",
-  "version": "1.0",
+  "version": "1.1",
   "page_action": {
     "default_icon": "icon.png"
   },
@@ -19,7 +19,7 @@
       ],
       "js": [
         "content.js",
-        "jquery-3.3.1.min.js"
+        "jquery-3.4.1.min.js"
       ]
     }
   ],

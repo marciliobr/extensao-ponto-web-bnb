@@ -150,7 +150,7 @@ class Batidas {
       let baseComparacao = this.batida4 == null ? convertTimeToMinute(getDateTime()) : this.batida4;
       if (this.saidaEstimada < baseComparacao) {
         $("#bnb-ponto-web-info").append('<span id="bnb-ponto-web-info-hora-extra" class="label">Extra: <strong>' + convertMinutesToHour(baseComparacao - this.saidaEstimada) + '</strong></span>');
-        $("#bnb-ponto-web-info").append('<span id="bnb-ponto-web-info-hora-extra-maxima" class="label">Limite de Saída: <strong>' + convertMinutesToHour(this.saidaEstimada + 120 + (this.cargaHoraria == 360 ? 15 : 0)) + '</strong></span>');
+        $("#bnb-ponto-web-info").append('<span id="bnb-ponto-web-info-hora-extra-maxima" class="label">Limite de Saída: <strong>' + convertMinutesToHour(this.saidaEstimada + 120 + (this.cargaHoraria == 360 ? 10 : 0)) + '</strong></span>');
       } else if (this.saidaEstimada > baseComparacao)
         $("#bnb-ponto-web-info").append('<span id="bnb-ponto-web-info-hora-extra" class="label">Compensar: <strong>' + convertMinutesToHour(this.saidaEstimada - baseComparacao) + '</strong></span>');
     }
