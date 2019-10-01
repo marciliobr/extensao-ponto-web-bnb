@@ -121,7 +121,7 @@ class Batidas {
   }
   obterSaidaEstimada() {
     if (this.quantidade < 3)
-      this._saidaEstimada = this.batida1 + this.cargaHoraria - (this.cargaHoraria == 360 ? 15 : -30);
+      this._saidaEstimada = this.batida1 + this.cargaHoraria - (this.cargaHoraria == 360 ? 0 : -30);
     else
       this._saidaEstimada = this.batida1 + this.cargaHoraria + this.batida3 - this.batida2 - (this.cargaHoraria == 360 ? 15 : 0);
   }
@@ -129,7 +129,7 @@ class Batidas {
     $("#bnb-ponto-web-info-saida-estimada").remove();
 
     if (this.quantidade > 0)
-      $("#bnb-ponto-web-info").append('<span id="bnb-ponto-web-info-saida-estimada" class="label">Saída estimada: <strong>' + convertMinutesToHour(this.saidaEstimada) + '</strong></span>');
+      $("#bnb-ponto-web-info").append('<span id="bnb-ponto-web-info-saida-estimada" class="label" title="' + ((this.cargaHoraria == 360 && this.quantidade < 3) ? "Considerando 15 min de intervalo" : "Considerando 30 min de intervalo") + '">Saída estimada: <strong>' + convertMinutesToHour(this.saidaEstimada) + '</strong></span>');
   }
   mostrarPrevisaoRetorno() {
     $("#bnb-ponto-web-info-previsao-retorno").remove();
@@ -179,12 +179,3 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   });
   sendResponse();
 });
-
-// O uso das opções foi suspenso para resolução de problema no carregamento das informações.
-//
-// function verificarOpcoes() {
-//   chrome.storage.local.get('duracaoIntervalo', function (data) { data.duracaoIntervalo ? batidas.mostrarDuracaoIntervalo() : null });
-//   chrome.storage.local.get('calcularHoraExtra', function (data) { data.calcularHoraExtra ? batidas.mostrarHoraExtra() : null });
-//   chrome.storage.local.get('previsaoRetorno', function (data) { data.previsaoRetorno ? batidas.mostrarPrevisaoRetorno() : null });
-//   chrome.storage.local.get('saidaEstimada', function (data) { data.saidaEstimada ? batidas.mostrarSaidaEstimada() : null });
-// }
