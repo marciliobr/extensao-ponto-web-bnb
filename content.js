@@ -129,7 +129,7 @@ class Batidas {
     $("#bnb-ponto-web-info-saida-estimada").remove();
 
     if (this.quantidade > 0)
-      $("#bnb-ponto-web-info").append('<span id="bnb-ponto-web-info-saida-estimada" class="label" title="' + ((this.cargaHoraria == 360 && this.quantidade < 3) ? "Considerando 15 min de intervalo" : "Considerando 30 min de intervalo") + '">Saída estimada: <strong>' + convertMinutesToHour(this.saidaEstimada) + '</strong></span>');
+      $("#bnb-ponto-web-info").append('<span id="bnb-ponto-web-info-saida-estimada" class="label" title="' + (this.quantidade < 3 ? ((this.cargaHoraria == 360) ? "Considerando 15 min de intervalo" : "Considerando 30 min de intervalo") : "") + '">Saída estimada: <strong>' + convertMinutesToHour(this.saidaEstimada) + '</strong></span>');
   }
   mostrarPrevisaoRetorno() {
     $("#bnb-ponto-web-info-previsao-retorno").remove();
