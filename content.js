@@ -176,6 +176,8 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
       batidas.atualizarBatidas();
     });
 
+    $("#new-batida").click(function () { setTimeout("$('#CaptchaCode').focus()", 1000) });
+
   });
   sendResponse();
 });
