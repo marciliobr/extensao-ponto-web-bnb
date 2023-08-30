@@ -1,16 +1,14 @@
 {
-  "manifest_version": 2,
-  "name": "Cálculo de horário de saída",
-  "description": "Essa extensão faz algo muito simples que o sistema de ponto não faz.",
-  "version": "1.4",
-  "page_action": {
+  "manifest_version": 3,
+  "name": "Extensão Ponto Web BNB",
+  "description": "Uma simples extensão para aprimorar a funcionalidade do sistema de ponto web do BNB.",
+  "version": "2.0 DEV",
+  "browser_action": {
     "default_icon": "icon.png"
   },
   "permissions": [
     "activeTab",
-    "tabs",
-    "declarativeContent",
-    "storage"
+    "declarativeContent"
   ],
   "content_scripts": [
     {
