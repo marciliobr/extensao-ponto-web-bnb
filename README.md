@@ -1,7 +1,34 @@
-# chrome-extension-bnb-ponto-web
+# Extensão Ponto Web BNB
+Uma extensão simples e não oficial para aprimorar a funcionalidade do sistema de ponto do BNB.
 
-Extensão não oficial para funcionários do [Banco do Nordeste](http://pontoeletronico.capgv.intra.bnb/pontoweb) que calcula a hora ideal de saída para completar a carga horária.
 
 ## Instalação
-* Extraia o [arquivo](https://github.com/leandrofranca/chrome-extension-bnb-ponto-web/archive/master.zip) em uma pasta na sua máquina;
-* Abra a aba "chrome://extensions/" e clique no botão "Carregar extensão expandida...".
+
+Este manual ensina como instalar uma extensão local, tanto no Chrome quanto no Edge.
+
+## Chrome
+
+1. Baixe o arquivo da extensão local no seu computador. (https://github.com/marciliobr/extensao-ponto-web-bnb/archive/refs/heads/main.zip)
+2. Abra o Chrome e clique no ícone de *Três pontos* no canto superior direito da janela.
+3. Selecione *Mais ferramentas* > *Extensões*.
+4. Clique no botão *Carregar sem compactação*.
+5. Selecione o arquivo da extensão local que você baixou no seu computador.
+6. Clique em *Abrir*.
+
+A extensão será instalada e ativada automaticamente. Você poderá ver o ícone da extensão na barra de ferramentas do Chrome.
+
+## Edge
+
+1. Baixe o arquivo da extensão local no seu computador.
+2. Abra o Edge e clique no ícone de *Três pontos* no canto superior direito da janela.
+3. Selecione *Configurações* > *Extensões*.
+4. Clique no botão *Carregar*.
+5. Selecione o arquivo da extensão local que você baixou no seu computador.
+6. Clique em *Abrir*.
+
+A extensão será instalada e ativada automaticamente. Você poderá ver o ícone da extensão na barra de ferramentas do Edge.
+
+## Observações
+
+* As extensões locais não são verificadas pelo Google ou pela Microsoft, portanto, é importante instalar extensões de fontes confiáveis.
+* As extensões locais podem não ser compatíveis com todas as versões do Chrome ou do Edge.
