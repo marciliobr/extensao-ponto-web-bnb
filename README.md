@@ -4,8 +4,8 @@ Uma extensão simples e não oficial para aprimorar a funcionalidade do sistema 
 
 ## Funcionalidades
 ##TODO
-* **Adiciona um botão na barra de ferramentas do navegador para acessar rapidamente o sistema de ponto.**
-[Imagem de um botão na barra de ferramentas do navegador]
+* **Adiciona um botão na barra de ferramentas do navegador para acessar rapidamente o sistema de ponto.**  
+![Imagem de um botão na barra de ferramentas do navegador](image.png)  
 * **Mostra informações sobre o status do ponto do usuário, como horas trabalhadas, horas faltadas e horas extras.**
 [Imagem de um tela mostrando o status do ponto do usuário]
 * **Permite que o usuário registre pontos de forma rápida e fácil.**
@@ -47,5 +47,5 @@ A extensão será instalada e ativada automaticamente. Você poderá ver o ícon
 
 ## Créditos
 
-Desenvolvido por Marcílio Batista Rocha.  
-Codigo orginal por [Leandro França] (https://github.com/leandrofranca/).
+Desenvolvido por Marcílio Batista Rocha  
+Codigo orginal por [Leandro França](https://github.com/leandrofranca)
