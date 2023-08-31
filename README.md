@@ -47,5 +47,5 @@ A extensão será instalada e ativada automaticamente. Você poderá ver o ícon
 
 ## Créditos
 
-Desenvolvido por Marcílio Batista Rocha.
+Desenvolvido por Marcílio Batista Rocha.  
 Codigo orginal por [Leandro França] (https://github.com/leandrofranca/).
