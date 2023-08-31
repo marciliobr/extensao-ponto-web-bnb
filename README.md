@@ -3,7 +3,7 @@
 Uma extensão simples e não oficial para aprimorar a funcionalidade do sistema de ponto do BNB.
 
 ## Funcionalidades
-##TODO
+
 * **Adiciona um botão na barra de ferramentas do navegador para acessar rapidamente o sistema de ponto.**  
 ![Imagem de um botão na barra de ferramentas do navegador](image.png)  
 * **Mostra informações sobre o status do ponto do usuário, como horas trabalhadas, horas faltadas e horas extras.**
@@ -48,4 +48,4 @@ A extensão será instalada e ativada automaticamente. Você poderá ver o ícon
 ## Créditos
 
 Desenvolvido por Marcílio Batista Rocha  
-Codigo orginal por [Leandro França](https://github.com/leandrofranca)
+Codigo orginal por [Leandro França](https://github.com/leandrofranca).
