@@ -5,7 +5,7 @@ Uma extensão simples e não oficial para aprimorar a funcionalidade do sistema 
 ## Funcionalidades
 
 * **Adiciona um botão na barra de ferramentas do navegador para acessar rapidamente o sistema de ponto.**  
-![Imagem de um botão na barra de ferramentas do navegador](image.png)  
+![Imagem de um botão na barra de ferramentas do navegador](images/icone.png)  
 * **Mostra informações sobre o status do ponto do usuário, como horas trabalhadas, horas faltadas e horas extras.**
 [Imagem de um tela mostrando o status do ponto do usuário]
 * **Permite que o usuário registre pontos de forma rápida e fácil.**
