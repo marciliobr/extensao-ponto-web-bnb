@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Extensão Ponto Web BNB",
   "description": "Uma simples extensão para aprimorar a funcionalidade do sistema de ponto web do BNB.",
-  "version": "2.0 DEV",
+  "version": "2.0",
   "browser_action": {
     "default_icon": "icon.png"
   },

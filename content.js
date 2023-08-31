@@ -1,3 +1,108 @@
+
+// URLs para as requisições
+const URL_HORA_SERVIDOR = "/Pontoweb/Home/getTime";
+const URL_CARGA_HORARIA_SERVIDOR = "/Pontoweb/Home/obterProximaBatida";
+const URL_BATIDAS_SERVIDOR = "/Pontoweb/api/batidas";
+
+// Variáveis para sincronização de tempo
+let horaServidor = null;
+let ultimaBuscaHoraServidor = null;
+const TOLERANCIA_SINCRONIZACAO_HORA = 5 * 60 * 1000; // 5 minutos em milissegundos
+
+
+/**
+ * Realiza uma requisição assíncrona para obter a hora do servidor.
+ * Se a requisição for bem-sucedida, a hora do servidor é extraída dos dados
+ * e armazenada nas variáveis 'horaServidor' e 'ultimaBuscaHoraServidor'.
+ * Em caso de erro, uma mensagem de erro é registrada no console.
+ */
+async function obterHoraServidor() {
+  try {
+    const resposta = await fetch(URL_HORA_SERVIDOR);
+    if (resposta.ok) {
+      const dados = await resposta.text();
+      const hora = dados.split(" ")[1];
+      horaServidor = new Date(`1970-01-01T${hora}`);
+      ultimaBuscaHoraServidor = new Date();
+    }
+  } catch (erro) {
+    console.error("Falha ao buscar a hora do servidor:", erro);
+  }
+}
+
+/**
+ * Obtém o horário atual. Na primeira chamada, o horário é obtido do servidor.
+ * Nas chamadas subsequentes, o horário é calculado com base no tempo decorrido
+ * desde a primeira chamada. O horário é sincronizado com o servidor usando a
+ * constante 'TOLERANCIA_SINCRONIZACAO_HORA'.
+ */
+function obterHoraAtual() {
+  if (horaServidor === null || (new Date() - ultimaBuscaHoraServidor) > TOLERANCIA_SINCRONIZACAO_HORA) {
+    obterHoraServidor();
+  }
+
+  const horaAtual = new Date(horaServidor.getTime() + (Date.now() - ultimaBuscaHoraServidor));
+
+  return horaAtual;
+}
+
+/**
+ * Realiza uma requisição assíncrona para obter a carga horária do servidor.
+ * Se a requisição for bem-sucedida, a carga horária do funcionário é extraída dos dados,
+ * convertida para minutos e retornada. Em caso de erro na requisição ou durante o processo,
+ * mensagens de erro são registradas no console e a função retorna null.
+ */
+async function obterCargaHorariaSevidor() {
+  let cargaHoraria = null;
+  try {
+    const response = await fetch(URL_CARGA_HORARIA_SERVIDOR);
+    if (response.ok) {
+      const data = await response.text();
+      const cargaHorariaFuncionario = $(data).filter("#CargaHorariaFuncionario").val();
+      cargaHoraria = parseInt(cargaHorariaFuncionario) * 60;
+    } else {
+      console.error("Falha ao obter dados da carga horária:", response.statusText);
+    }
+  } catch (error) {
+    console.error("Erro durante a requisição:", error);
+  }
+
+  return cargaHoraria;
+}
+
+/**
+ * Realiza uma requisição assíncrona para obter as batidas registradas no servidor.
+ * Se a requisição for bem-sucedida, os dados de batida são convertidos para objetos Date,
+ * considerando um deslocamento de fuso horário de -03:00. Esses objetos Date são mapeados
+ * e retornados em um array. Em caso de erro na requisição ou durante o processo,
+ * mensagens de erro são registradas no console e a função retorna um array vazio.
+ */
+async function obterBatidasServidor() {
+  try {
+    const response = await fetch(URL_BATIDAS_SERVIDOR);
+    
+    if (response.ok) {
+      const data = await response.json();
+      return data.map(batida => new Date(`${batida.datahora}-03:00`));
+    } else {
+      console.error("Falha ao obter batidas:", response.statusText);
+      return [];
+    }
+  } catch (error) {
+    console.error("Erro durante a requisição:", error);
+    return [];
+  }
+}
+
+
+
+
+
+
+
+
+
+// Código original ainda não reescrito
 var batidas = null;
 
 function formatLeftZero(num) {
